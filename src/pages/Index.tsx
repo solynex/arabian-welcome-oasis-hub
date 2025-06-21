@@ -1,10 +1,12 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Globe, Users, TrendingUp, Shield, ArrowLeft, Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  const navigate = useNavigate();
+
   const features = [
     {
       icon: <Globe className="h-8 w-8 text-red-600" />,
@@ -89,7 +91,7 @@ const Index = () => {
             <Button variant="ghost" className="text-gray-700 hover:text-red-600">
               الرئيسية
             </Button>
-            <Button variant="ghost" className="text-gray-700 hover:text-red-600">
+            <Button variant="ghost" className="text-gray-700 hover:text-red-600" onClick={() => navigate('/login')}>
               تصفح الطلبات
             </Button>
             <Button variant="ghost" className="text-gray-700 hover:text-red-600">
@@ -101,10 +103,10 @@ const Index = () => {
           </nav>
 
           <div className="flex items-center space-x-3 space-x-reverse">
-            <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-50">
+            <Button variant="outline" className="border-red-600 text-red-600 hover:bg-red-50" onClick={() => navigate('/login')}>
               تسجيل الدخول
             </Button>
-            <Button className="bg-red-600 hover:bg-red-700 text-white">
+            <Button className="bg-red-600 hover:bg-red-700 text-white" onClick={() => navigate('/login')}>
               انضم الآن
             </Button>
           </div>
@@ -127,7 +129,7 @@ const Index = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-              <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 text-lg">
+              <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-4 text-lg" onClick={() => navigate('/login')}>
                 ابدأ التجارة الآن
                 <ArrowLeft className="mr-2 h-5 w-5" />
               </Button>
@@ -230,7 +232,7 @@ const Index = () => {
                       <span className="text-gray-600">الميزانية:</span>
                       <span className="font-medium text-red-600">{offer.budget}</span>
                     </div>
-                    <Button className="w-full bg-red-600 hover:bg-red-700 text-white mt-4">
+                    <Button className="w-full bg-red-600 hover:bg-red-700 text-white mt-4" onClick={() => navigate('/login')}>
                       عرض التفاصيل
                     </Button>
                   </div>
@@ -240,7 +242,7 @@ const Index = () => {
           </div>
 
           <div className="text-center">
-            <Button size="lg" variant="outline" className="border-red-600 text-red-600 hover:bg-red-50">
+            <Button size="lg" variant="outline" className="border-red-600 text-red-600 hover:bg-red-50" onClick={() => navigate('/login')}>
               عرض جميع الطلبات
             </Button>
           </div>
