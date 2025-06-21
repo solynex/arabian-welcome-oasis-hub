@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from '@/contexts/AuthContext';
+import { useRequests } from '@/contexts/RequestsContext';
 import { Bell, Plus, MessageSquare, User, Settings, LogOut, TrendingUp, Users, FileText, DollarSign } from 'lucide-react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import RequestForm from './RequestForm';
@@ -12,24 +13,24 @@ import OffersReceived from './OffersReceived';
 
 const ImporterDashboard = () => {
   const { user, logout } = useAuth();
+  const { requests } = useRequests();
   const [activeTab, setActiveTab] = useState('overview');
   const [showRequestForm, setShowRequestForm] = useState(false);
 
-  const stats = [
-    { title: 'الطلبات النشطة', value: '5', icon: <FileText className="h-6 w-6" />, color: 'text-blue-600' },
-    { title: 'العروض المستلمة', value: '23', icon: <TrendingUp className="h-6 w-6" />, color: 'text-green-600' },
-    { title: 'الصفقات المكتملة', value: '12', icon: <DollarSign className="h-6 w-6" />, color: 'text-purple-600' },
-    { title: 'إجمالي القيمة', value: '850,000 ر.س', icon: <DollarSign className="h-6 w-6" />, color: 'text-red-600' }
-  ];
+  const userRequests = requests.filter(req => req.userId === user?.email);
+  const totalOffers = userRequests.reduce((sum, req) => sum + req.offers, 0);
+  const completedDeals = userRequests.filter(req => req.status === 'مكتمل').length;
 
-  const recentRequests = [
-    { id: 1, title: 'مطلوب استيراد أجهزة كمبيوتر محمولة', status: 'نشط', offers: 15, date: '2024-01-15' },
-    { id: 2, title: 'بحث عن موردين للمواد الخام', status: 'قيد المراجعة', offers: 8, date: '2024-01-10' },
-    { id: 3, title: 'استيراد معدات طبية متخصصة', status: 'مكتمل', offers: 23, date: '2024-01-05' }
+  const stats = [
+    { title: 'الطلبات النشطة', value: userRequests.length.toString(), icon: <FileText className="h-6 w-6" />, color: 'text-blue-600' },
+    { title: 'العروض المستلمة', value: totalOffers.toString(), icon: <TrendingUp className="h-6 w-6" />, color: 'text-green-600' },
+    { title: 'الصفقات المكتملة', value: completedDeals.toString(), icon: <DollarSign className="h-6 w-6" />, color: 'text-purple-600' },
+    { title: 'إجمالي القيمة', value: '850,000 ر.س', icon: <DollarSign className="h-6 w-6" />, color: 'text-red-600' }
   ];
 
   const handleCreateRequest = (requestData: any) => {
     console.log('طلب جديد تم إنشاؤه:', requestData);
+    // The request is already added through the RequestsContext
   };
 
   const renderContent = () => {
@@ -60,7 +61,7 @@ const ImporterDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {recentRequests.map((request) => (
+                  {userRequests.slice(0, 3).map((request) => (
                     <div key={request.id} className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
                         <h4 className="font-medium">{request.title}</h4>
@@ -74,6 +75,11 @@ const ImporterDashboard = () => {
                       </div>
                     </div>
                   ))}
+                  {userRequests.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                      لم تقم بإنشاء أي طلبات بعد
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

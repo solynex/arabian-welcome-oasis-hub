@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { X } from 'lucide-react';
+import { useRequests } from '@/contexts/RequestsContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface RequestFormProps {
   onClose: () => void;
@@ -14,6 +15,8 @@ interface RequestFormProps {
 }
 
 const RequestForm = ({ onClose, onSubmit }: RequestFormProps) => {
+  const { addRequest } = useRequests();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -31,13 +34,16 @@ const RequestForm = ({ onClose, onSubmit }: RequestFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({
+    
+    const requestData = {
       ...formData,
-      id: Date.now(),
-      date: new Date().toISOString().split('T')[0],
-      status: 'نشط',
-      offers: 0
-    });
+      authorName: user?.companyName || 'شركة غير محددة',
+      authorCountry: user?.country || 'غير محدد',
+      userId: user?.email || 'unknown'
+    };
+    
+    addRequest(requestData);
+    onSubmit(requestData);
     onClose();
   };
 
@@ -51,7 +57,7 @@ const RequestForm = ({ onClose, onSubmit }: RequestFormProps) => {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>إنشاء طلب جديد</CardTitle>
-            <CardDescription>أضف تفاصيل طلب الاستيراد الخاص بك</CardDescription>
+            <CardDescription>أضف تفاصيل طلب الاستيراد الخاص بك وسيتم نشره في الصفحة الرئيسية</CardDescription>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
@@ -102,12 +108,13 @@ const RequestForm = ({ onClose, onSubmit }: RequestFormProps) => {
                     <SelectValue placeholder="اختر التصنيف" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="electronics">إلكترونيات</SelectItem>
-                    <SelectItem value="textiles">منسوجات</SelectItem>
-                    <SelectItem value="machinery">آلات ومعدات</SelectItem>
-                    <SelectItem value="food">مواد غذائية</SelectItem>
-                    <SelectItem value="chemicals">كيماويات</SelectItem>
-                    <SelectItem value="medical">معدات طبية</SelectItem>
+                    <SelectItem value="إلكترونيات">إلكترونيات</SelectItem>
+                    <SelectItem value="منسوجات">منسوجات</SelectItem>
+                    <SelectItem value="آلات ومعدات">آلات ومعدات</SelectItem>
+                    <SelectItem value="مواد غذائية">مواد غذائية</SelectItem>
+                    <SelectItem value="كيماويات">كيماويات</SelectItem>
+                    <SelectItem value="معدات طبية">معدات طبية</SelectItem>
+                    <SelectItem value="مواد خام">مواد خام</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -141,9 +148,9 @@ const RequestForm = ({ onClose, onSubmit }: RequestFormProps) => {
                     <SelectValue placeholder="اختر طريقة الشحن" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="sea">شحن بحري</SelectItem>
-                    <SelectItem value="air">شحن جوي</SelectItem>
-                    <SelectItem value="land">شحن بري</SelectItem>
+                    <SelectItem value="شحن بحري">شحن بحري</SelectItem>
+                    <SelectItem value="شحن جوي">شحن جوي</SelectItem>
+                    <SelectItem value="شحن بري">شحن بري</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -166,9 +173,9 @@ const RequestForm = ({ onClose, onSubmit }: RequestFormProps) => {
                     <SelectValue placeholder="اختر طريقة الدفع" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="lc">خطاب ائتمان</SelectItem>
-                    <SelectItem value="tt">تحويل مصرفي</SelectItem>
-                    <SelectItem value="cash">دفع نقدي</SelectItem>
+                    <SelectItem value="خطاب ائتمان">خطاب ائتمان</SelectItem>
+                    <SelectItem value="تحويل مصرفي">تحويل مصرفي</SelectItem>
+                    <SelectItem value="دفع نقدي">دفع نقدي</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -190,9 +197,9 @@ const RequestForm = ({ onClose, onSubmit }: RequestFormProps) => {
                   <SelectValue placeholder="اختر نوع العرض" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="regular">عرض عادي</SelectItem>
-                  <SelectItem value="urgent">عرض عاجل</SelectItem>
-                  <SelectItem value="tender">مناقصة</SelectItem>
+                  <SelectItem value="عرض عادي">عرض عادي</SelectItem>
+                  <SelectItem value="عرض عاجل">عرض عاجل</SelectItem>
+                  <SelectItem value="مناقصة">مناقصة</SelectItem>
                 </SelectContent>
               </Select>
             </div>
